@@ -1,14 +1,14 @@
-## 710-Lib is A Multi-Framework Wrapper
-# Any Scripts made with 710-lib Framework. Calls and export will work on Any framework(ESX and QBCore out of the box and any other one with some edits!)
-# PR Changes if updates happen to frameworks or if you want to add another popular one like VRP! 
-# There will still be some things that you will need to do specifc in your scripts but this removes most of the frame work calls with 710-lib calls. (Examples- Inventory systems, Clothing systems and stuff like that since people change them so much its harder to keep something like that going in here)
+# 710-Lib is A Multi-Framework Wrapper
+### Any Scripts made with 710-lib Framework. Calls and export will work on Any framework(ESX and QBCore out of the box and any other one with some edits!)
+## PR Changes if updates happen to frameworks or if you want to add another popular one like VRP! 
+### There will still be some things that you will need to do specifc in your scripts but this removes most of the frame work calls with 710-lib calls. (Examples- Inventory systems, Clothing systems and stuff like that since people change them so much its harder to keep something like that going in here)
 
 
 
-## Written to be SIMPLE to write in for Newer devs to get their creativity out there! 
+# Written to be SIMPLE to write in for Newer devs to get their creativity out there! 
 
 
-### EXPORT that must be used at the top of any script using 710-lib 
+## EXPORT that must be used at the top of any script using 710-lib 
 ```lua
 -- Works on both server and client 
 local Framework = exports['710-lib']:GetFrameworkObject()
@@ -18,8 +18,8 @@ local Framework = exports['710-lib']:GetFrameworkObject()
 
 
 
-### Server Functions 
-# Framework.PlayerDataS(source)
+# Server Functions 
+### Framework.PlayerDataS(source)
 Available args for player data are as follows
 ```lua
 local Framework = exports['710-lib']:GetFrameworkObject()
@@ -38,7 +38,7 @@ local RemoveMoney =  Player.RemoveMoney("bank", 1000) --- same as above but remo
 local RemoveMoney =  Player.RemoveMoney("cash", 1000)
 local Job = Player.Job --- Returns Job Table 
 ```
-# Framework.GetPlayerFromPidS(pid)
+### Framework.GetPlayerFromPidS(pid)
 This takes CitizenID on QBCore or Lisence on ESX aka Framework.PlayerDataS(source).Pid 
 ```lua
 -- Example usage 
@@ -54,8 +54,8 @@ local policeOnline = {'SDSD232', '8769SDSD'} --- this is just an example please 
 ```
 
 
-### Client Functions 
-# Framework.PlayerDataC() -- Remember source isnt needed since we are on client side.
+# Client Functions 
+### Framework.PlayerDataC() -- Remember source isnt needed since we are on client side.
 Available list of options for Client side Basically same as server minus add/remove money cause that wouldnt be safe 
 ```lua
 local Framework = exports['710-lib']:GetFrameworkObject()
