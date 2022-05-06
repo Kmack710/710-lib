@@ -52,6 +52,13 @@ function Framework.GetPlayerFromPidS(pid)
     end
 end
 
+function Framework.RegisterServerCallback(name, callback)
+    if Config.Framework == 'qbcore' then
+        QBCore.Functions.RegisterCallback(name, callback)
+    elseif Config.Framework == 'esx' then
+        ESX.RegisterServerCallback(name, callback)
+    end
+end
 
 exports('GetFrameworkObject', function()
     return Framework

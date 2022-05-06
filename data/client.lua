@@ -33,13 +33,35 @@ function Framework.PlayerDataC()
     end
 end  
 
-
-if Config.Framework == 'qbcore' then
-    Framework.Playerloaded = 'QBCore:Client:OnPlayerLoaded'
-elseif Config.Framework == 'esx' then
-    Framework.Playerloaded = 'esx:playerLoaded'
+function Framework.TriggerServerCallback(name, callback, ...)
+    if Config.Framework == 'qbcore' then
+        QBCore.Functions.TriggerCallback(name, callback, ...)
+    elseif Config.Framework == 'esx' then
+        ESX.TriggerServerCallback(name, callback, ...)
+    end
 end
 
+
+
+if Config.Framework == 'qbcore' then
+    AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
+        TriggerEvent('710-lib:PlayerLoaded')
+    end)
+elseif Config.Framework == 'esx' then
+    AddEventHandler('esx:playerLoaded', function()
+        print('ESX Player Loaded Triggered')
+        TriggerEvent('710-lib:PlayerLoaded')
+    end) 
+end
+
+RegisterNetEvent('710-lib:PlayerLoaded')
+AddEventHandler('710-lib:PlayerLoaded', function()
+    print('Player Loaded worked but didnt?')
+    -- Do nothing this is just to trigger things within scripts with 
+    -- AddEventHandler('710-lib:PlayerLoaded', function()
+    --- Code you want to execute here when the player loads
+    -- end)
+end)
 
 RegisterNetEvent('Framework:CreateContextMenu', function(menu) 
     if Config.Important['MenuResource'] == 'qb-menu' then 
