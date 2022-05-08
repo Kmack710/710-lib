@@ -8,20 +8,21 @@ version '1.0.0'
 
 shared_scripts {
     '@es_extended/imports.lua', --- Command out if not using ESX 
-    'config.lua',
+    'configs/config.lua',
 }
 
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
-    'data/server.lua'
+    'configs/custom-server.lua',
+    'data/server.lua',
+    
 }
 
 client_scripts {
-    'data/client.lua'
+    'configs/custom-client.lua',
+    'data/client.lua',
+    
 }
 
-escrow_ignore {
-    'config.lua'
-}
 
 lua54 'yes'

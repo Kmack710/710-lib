@@ -22,6 +22,7 @@ function Framework.PlayerDataS(source)
         return Pdata
     elseif Config.Framework == 'esx' then
         local data = ESX.GetPlayerFromId(source)
+        --print(json.encode(data))
         local Pdata = {
             Pid = data.identifier,
             Name = data.name,
@@ -49,6 +50,19 @@ function Framework.GetPlayerFromPidS(pid)
         local source = data.source
         local result = Framework.PlayerDataS(source)
         return result
+    end
+end
+
+function Framework.NotiS(source, message, type, time) --- type = 'info', 'success', 'error'
+    if Config.CustomNotifications then
+        Custom.NotiS(source, message, type, time)
+    else 
+        if Config.Framework == 'qbcore' then
+            QBCore.Functions.Notify(source, message, type, time)
+        elseif Config.Framework == 'esx' then
+            local Player = ESX.GetPlayerFromId(source)
+            Player.showNotification(message)
+        end
     end
 end
 

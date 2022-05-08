@@ -72,3 +72,26 @@ local Dirty = Player.Dirty --- Returns  dirty money Only works for ESX right now
 local Source = Player.Source --- If you need to use or check player source for anything. 
 local Job = Player.Job --- Returns Job Table 
 ```
+# Notifications 
+
+## Server 
+### Framework.NotiS(source, message, type, time)
+```lua 
+-- Example usage 
+local Framework = exports['710-lib']:GetFrameworkObject()
+local message = 'Hi my name is Joe'
+Framework.NotiS(source, message, 'info' 5000) -- Time is optional 
+-- Available types 
+-- 'info' 
+-- 'success'
+-- 'error'
+```
+## Client 
+### Framework.NotiC(message, type, time)
+```lua 
+-- Example useage 
+local Framework = exports['710-lib']:GetFrameworkObject()
+local message = 'My name is not Joe'
+Framework.NotiC(message, 'error', 5000) -- time is optional 
+-- Same types as server are available. 
+```
