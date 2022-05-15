@@ -19,7 +19,6 @@ function Framework.PlayerDataC()
         return Pdata
     elseif Config.Framework == 'esx' then 
         local data = ESX.GetPlayerData()
-        print(json.encode(data.accounts))
         local pAccount = data.accounts
         local pBank = {}
         local pCash = {}
@@ -43,20 +42,69 @@ function Framework.PlayerDataC()
             Cash = pCash,
             Dirty = pDirty,
             Source = data.playerId,
-            Job = data.job,            
+            Job = data.job, 
+            Notify = function(message, type, time) Framework.NotiC(message, type, time) end,           
         }
         return Pdata 
     end
 end  
 
-function Framework.TriggerServerCallback(name, callback, ...)
+function Framework.GetClosestVehicle(coords)
     if Config.Framework == 'qbcore' then
-        QBCore.Functions.TriggerCallback(name, callback, ...)
+        return QBCore.Functions.GetClosestVehicle(coords)
     elseif Config.Framework == 'esx' then
-        ESX.TriggerServerCallback(name, callback, ...)
+        return ESX.Game.GetClosestVehicle(coords)
+    end
+end 
+
+function Framework.TriggerServerCallback(name, ...)
+    if Config.Framework == 'qbcore' then  --- Credit to Irdris for the Promise chunk of code built into this for Security resasons! 
+        local p = nil
+        local searchProfilePromise = function(...)  -- https://github.com/IdrisDose 
+            if p then return end
+            p = promise.new()
+    
+            QBCore.Functions.TriggerCallback(name, function(result)
+                p:resolve(result)
+            end, ...)
+            return Citizen.Await(p)
+        end
+        local result = searchProfilePromise(...) --- Credit to Irdris for the Promise chunk of code built into this for Security resasons! 
+        p = nil
+        return result
+    elseif Config.Framework == 'esx' then
+        local p = nil
+        local searchProfilePromise = function(...)  -- https://github.com/IdrisDose 
+            if p then return end
+            p = promise.new() --- Credit to Irdris for the Promise chunk of code built into this for Security resasons! 
+            ESX.TriggerServerCallback(name, function(result)  -- https://github.com/IdrisDose 
+                p:resolve(result)
+            end, ...)
+            return Citizen.Await(p)
+        end
+        local result = searchProfilePromise(...)  -- https://github.com/IdrisDose 
+        p = nil
+        return result
+    end
+end 
+
+function Framework.OpenStash(stashlabel, stashslotsweight)
+    if Config.Framework == 'qbcore' then
+        TriggerServerEvent('inventory:server:OpenInventory', 'stash', stashlabel, stashslotsweight)
+        TriggerEvent("inventory:client:SetCurrentStash", stashlabel)
+    elseif Config.Framework == 'esx' then
+        TriggerServerEvent('ox:loadStashes') --- Make sure all stashes got loaded first. 
+        exports.ox_inventory:openInventory('stash', {id=stashlabel})
+    end
+end 
+
+function Framework.SpawnVehicle(vehicle, coords, networked, cb)
+    if Config.Framework == 'qbcore' then
+        QBCore.Functions.SpawnVehicle(vehicle, cb, coords, networked)
+    elseif Config.Framework == 'esx' then
+        ESX.Game.SpawnVehicle(vehicle, coords.xyz, coords.w, cb, networked)
     end
 end
-
 
 function Framework.DrawText(action, text)
     if Config.CustomDrawText_CL == false then 
@@ -64,20 +112,18 @@ function Framework.DrawText(action, text)
             if Config.Framework == 'qbcore' then
                 QBCore.Functions.DrawText(action, text)
             elseif Config.Framework == 'esx' then
-                Custom.DrawTextUI('open', text) 
-                
+                exports['esx_textui']:TextUI(text)
             end
         else
             if Config.Framework == 'qbcore' then
                 QBCore.Functions.DrawText(action, text)
             elseif Config.Framework == 'esx' then
                 Custom.DrawTextUI('close') 
-                
+                exports['esx_textui']:HideUI()
             end 
         end 
     else 
         if action == 'open' then
-            print('hihihihihihihihih')
             Custom.DrawTextUI('open', text) 
         else
             Custom.DrawTextUI('close') 
@@ -117,18 +163,6 @@ AddEventHandler('710-lib:PlayerLoaded', function()
     --- Code you want to execute here when the player loads
     -- end)
 end)
-
-function Framework.CreateContextMenu(menu)
-    print('Creating context menu')
-    if Config.Framework == 'qbcore' then
-        if menu.txt == nil then menu.txt = menu.context end
-        if menu.params == nil then menu.params = {event=menu.event, isServer=menu.server, args=menu.args} end
-        exports[Config.QB_prefix..'menu']:openMenu(menu)
-    else 
-        TriggerEvent('nh-context:createMenu', menu)
-    end 
-end    
-
 
 
 exports('GetFrameworkObject', function()

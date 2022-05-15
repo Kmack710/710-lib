@@ -1,5 +1,6 @@
-# WIP est Release Date - May 10th 
-
+# WIP Release Date - May 10th 
+## Currently only fully works on ESX - QBCore fix ups will be may 9-10th! 
+# Docs will be on http://Kmack710.info/docs
 # 710-Lib is A Multi-Framework Wrapper
 ### Any Scripts made with 710-lib Framework. Calls and export will work on Any framework(ESX and QBCore out of the box and any other one with some edits!)
 ## PR Changes if updates happen to frameworks or if you want to add another popular one like VRP! 
@@ -21,6 +22,7 @@ local Framework = exports['710-lib']:GetFrameworkObject()
 
 
 # Server Functions 
+## PlayerData 
 ### Framework.PlayerDataS(source)
 Available args for player data are as follows
 ```lua
@@ -54,8 +56,19 @@ local policeOnline = {'SDSD232', '8769SDSD'} --- this is just an example please 
         end 
     end 
 ```
-
-
+## Register Server Callback 
+### Framework.RegisterServerCallback(name, callback)
+```lua
+--- Example for the code shown below to call it on client! ---Thanks to Idris for the Promsie code found in Client.lua! 
+Framework.RegisterServerCallback('710-PoliceJob:CheckIfIsPolice', function(source, cb, pid)
+    local DeptCheck = checkForPlayerDeptExample(pid)
+    if DeptCheck ~= false then
+        cb(DeptCheck)
+    else
+        cb(false)
+    end
+end)
+```
 # Client Functions 
 ### Framework.PlayerDataC() -- Remember source isnt needed since we are on client side.
 Available list of options for Client side Basically same as server minus add/remove money cause that wouldnt be safe 
@@ -72,6 +85,23 @@ local Dirty = Player.Dirty --- Returns  dirty money Only works for ESX right now
 local Source = Player.Source --- If you need to use or check player source for anything. 
 local Job = Player.Job --- Returns Job Table 
 ```
+
+## Trigger Server Callback 
+### Framework.TriggerServerCallback(name, args)
+```lua
+--- Huge thanks to Idris for making this really easy and secure 
+--- This runs a promise within 710-lib so its not just a normal callback! :) 
+local PlayerPolice = Framework.TriggerServerCallback('710-PoliceJob:CheckIfIsPolice', pid) -- args is just Pid in this case so it gets that players rank and department for police 
+if PlayerPolice then 
+    PlayerRank = PlayerPolice.rank
+    PlayerDepartment = PlayerPolice.dept 
+end 
+```
+
+
+
+
+
 # Notifications 
 
 ## Server 

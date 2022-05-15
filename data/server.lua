@@ -3,7 +3,7 @@ if Config.Framework == 'qbcore' then
 end 
 
 Framework = {}
-
+ 
 function Framework.PlayerDataS(source)
     if Config.Framework == 'qbcore' then
         local data = QBCore.Functions.GetPlayer(source)
@@ -13,27 +13,48 @@ function Framework.PlayerDataS(source)
             Identifier = data.PlayerData.identifier,
             Bank = data.Functions.GetMoney('bank'),
             Cash = data.Functions.GetMoney('cash'),
-            Source = source, 
+            Source = source,
+            RemoveItem = data.Functions.RemoveItem,
+            AddItem = data.Functions.AddItem,  
             AddMoney = data.Functions.AddMoney, 
             RemoveMoney = data.Functions.RemoveMoney,
+            AddBankMoney = function(amount) data.Functions.AddMoney('bank', amount) end,
+            RemoveBankMoney = function(amount) data.Functions.RemoveMoney('bank', amount) end,
+            AddCash = function(amount) data.Functions.AddMoney('black_money', amount) end,
+            RemoveCash = function(amount) data.Functions.RemoveMoneyy('black_money', amount) end,
+            AddDirtyMoney = function(amount) data.Functions.AddItem('markedbills', amount) end,
+            RemoveDirtyMoney = function(amount) data.Functions.RemoveItem('markedbills', amount) end,
             Job = data.PlayerData.job,
-            
+            SetJob = data.setJob,
         }
         return Pdata
     elseif Config.Framework == 'esx' then
         local data = ESX.GetPlayerFromId(source)
-        --print(json.encode(data))
+        local pJob = data.job
+        pJob.grade = {}
+        pJob.grade.name = data.job.grade_name
+        pJob.grade.label = data.job.grade_label
+        pJob.grade.level = data.job.grade
         local Pdata = {
             Pid = data.identifier,
             Name = data.name,
             Identifier = data.identifier,
             Bank = data.getAccount('bank').money,
             Cash = data.getMoney(),
-            Dirty = data.getAccount('black_money').money, -- ESX only since QBCore uses Items. 
+            Dirty = data.getAccount('black_money').money, 
             Source = source,
-            AddMoney = data.addAccountMoney,
-            RemoveMoney = data.removeAccountMoney,
-            Job = data.job,            
+            RemoveItem = data.removeInventoryItem,
+            AddItem = data.addInventoryItem,
+            AddCash = data.addMoney,
+            RemoveCash = data.removeMoney,
+            AddBankMoney = function(amount) data.addAccountMoney('bank', amount) end,
+            RemoveBankMoney = function(amount) data.removeAccountMoney('bank', amount) end,
+            AddDirtyMoney = function(amount) data.removeAccountMoney('black_money', amount) end,
+            RemoveDirtyMoney = function(amount) data.removeAccountMoney('black_money', amount) end,
+            Job = pJob,
+            SetJob = data.setJob,
+            Notify = function(message, type, time) Framework.NotiS(source, message, type, time) end,
+            
         }
         return Pdata
     end
@@ -42,14 +63,42 @@ end
 function Framework.GetPlayerFromPidS(pid)
     if Config.Framework == 'esx' then
         local data = ESX.GetPlayerFromIdentifier(pid)
-        local source = data.source
-        local result = Framework.PlayerDataS(source)
-        return result
+        if data ~= nil then
+            local Pdata = {
+                Pid = data.identifier,
+                Name = data.name,
+                Identifier = data.identifier,
+                Bank = data.getAccount('bank').money,
+                Cash = data.getMoney(),
+                Dirty = data.getAccount('black_money').money, -- ESX only since QBCore uses Items. 
+                Source = data.source,
+                AddMoney = data.addAccountMoney,
+                RemoveMoney = data.removeAccountMoney,
+                Job = data.job,
+                SetJob = data.setJob,
+                            
+            }
+            return Pdata
+        else 
+            return false
+        end 
+
     elseif Config.Framework == 'qbcore' then
         local data = QBCore.Functions.GetPlayer(pid)
-        local source = data.source
-        local result = Framework.PlayerDataS(source)
-        return result
+        local Pdata = {
+            Pid = data.PlayerData.citizenid,
+            Name = data.PlayerData.charinfo.firstname..' '..data.PlayerData.charinfo.lastname,
+            Identifier = data.PlayerData.identifier,
+            Bank = data.Functions.GetMoney('bank'),
+            Cash = data.Functions.GetMoney('cash'),
+            Source = data.source, 
+            AddMoney = data.Functions.AddMoney, 
+            RemoveMoney = data.Functions.RemoveMoney,
+            Job = data.PlayerData.job,
+            SetJob = data.setJob,  
+            
+        }
+        return Pdata
     end
 end
 
@@ -65,7 +114,25 @@ function Framework.NotiS(source, message, type, time) --- type = 'info', 'succes
         end
     end
 end
-
+            
+function Framework.AdminCheck(source)
+    if Config.Framework == 'esx' then 
+        local Player = ESX.GetPlayerFromId(source)
+        local perms = Player.getGroup()
+        if perms == 'admin' then
+            return true
+        else
+            return false
+        end
+    elseif Config.Framework == 'qbcore' then 
+       local perms = QBCore.Functions.GetPermission(source)
+       if perms == 'admin' then
+            return true
+        else
+            return false
+        end
+    end 
+end 
 function Framework.RegisterServerCallback(name, callback)
     if Config.Framework == 'qbcore' then
         QBCore.Functions.RegisterCallback(name, callback)
@@ -73,6 +140,14 @@ function Framework.RegisterServerCallback(name, callback)
         ESX.RegisterServerCallback(name, callback)
     end
 end
+
+function Framework.RegisterStash(stashid, stashlabel, stashslots, stashweightlimit, stashowner)
+    if Config.Framework == 'esx' then
+        exports.ox_inventory:RegisterStash(stashid, stashlabel, stashslots, stashweightlimit, stashowner)
+    elseif Config.Framework == 'qbcore' then 
+        ---- Qbcore doesnt register stashes technically they are just opened and if dont exist they are created so will all be in open side
+    end 
+end 
 
 exports('GetFrameworkObject', function()
     return Framework

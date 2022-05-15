@@ -1,11 +1,10 @@
 Custom = {} 
 
-
 if Config.Framework == 'qbcore' then
     QBCore = exports[Config.QB_prefix..'core']:GetCoreObject()
 end 
 
---- Custom DrawTextUI Since ESX doesnt have one YET --- will still leave this here after for if ppl use okok and want it to always be that instead. 
+--- Custom DrawTextUI -- okok as an example of how to use it.
 function Custom.DrawTextUI(action, text) 
     if action == 'open' then 
         exports['okokTextUI']:Open(text, 'color', 'left') --- okok used as an example for this by default. 
