@@ -11,7 +11,7 @@
 # Written to be SIMPLE to write in for Newer devs to get their creativity out there! 
 
 
-## EXPORT that must be used at the top of any script using 710-lib .
+## EXPORT that must be used at the top of any script using 710-lib
 ```lua
 -- Works on both server and client 
 local Framework = exports['710-lib']:GetFrameworkObject()
