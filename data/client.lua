@@ -32,11 +32,9 @@ function Framework.PlayerDataC()
                 black = v.money
             end
         end
-       
-
         local Pdata = {
             Pid = data.identifier,
-            Name = data.name,
+            Name = Framework.TriggerServerCallback('710-lib:GetPlayerName'),
             Identifier = data.identifier,
             Bank = pBank,
             Cash = pCash,
@@ -44,8 +42,17 @@ function Framework.PlayerDataC()
             Source = data.playerId,
             Job = data.job, 
             Notify = function(message, type, time) Framework.NotiC(message, type, time) end,           
+        
         }
         return Pdata 
+    end
+end 
+
+function Framework.GetClosestPlayer(coords)
+    if Config.Framework == 'qbcore' then 
+        return QBCore.Functions.GetClosestPlayer(coords)
+    elseif Config.Framework == 'esx' then 
+        return ESX.Game.GetClosestPlayer(coords)
     end
 end  
 
@@ -93,7 +100,7 @@ function Framework.OpenStash(stashlabel, stashslotsweight)
         TriggerServerEvent('inventory:server:OpenInventory', 'stash', stashlabel, stashslotsweight)
         TriggerEvent("inventory:client:SetCurrentStash", stashlabel)
     elseif Config.Framework == 'esx' then
-        TriggerServerEvent('ox:loadStashes') --- Make sure all stashes got loaded first. 
+        TriggerServerEvent('ox:loadStashes') 
         exports.ox_inventory:openInventory('stash', {id=stashlabel})
     end
 end 
@@ -103,6 +110,17 @@ function Framework.SpawnVehicle(vehicle, coords, networked, cb)
         QBCore.Functions.SpawnVehicle(vehicle, cb, coords, networked)
     elseif Config.Framework == 'esx' then
         ESX.Game.SpawnVehicle(vehicle, coords.xyz, coords.w, cb, networked)
+    end
+end
+
+function Framework.GetSourceFromEntity(entity)
+    local ped = entity
+    local playerIndex = NetworkGetPlayerIndexFromPed(ped)
+    local playerServerId = GetPlayerServerId(playerIndex)
+    if playerServerId ~= nil then
+        return playerServerId
+    else
+        return nil
     end
 end
 

@@ -21,7 +21,7 @@ function Framework.PlayerDataS(source)
             AddBankMoney = function(amount) data.Functions.AddMoney('bank', amount) end,
             RemoveBankMoney = function(amount) data.Functions.RemoveMoney('bank', amount) end,
             AddCash = function(amount) data.Functions.AddMoney('black_money', amount) end,
-            RemoveCash = function(amount) data.Functions.RemoveMoneyy('black_money', amount) end,
+            RemoveCash = function(amount) data.Functions.RemoveMoney('black_money', amount) end,
             AddDirtyMoney = function(amount) data.Functions.AddItem('markedbills', amount) end,
             RemoveDirtyMoney = function(amount) data.Functions.RemoveItem('markedbills', amount) end,
             Job = data.PlayerData.job,
@@ -31,10 +31,11 @@ function Framework.PlayerDataS(source)
     elseif Config.Framework == 'esx' then
         local data = ESX.GetPlayerFromId(source)
         local pJob = data.job
-        pJob.grade = {}
-        pJob.grade.name = data.job.grade_name
-        pJob.grade.label = data.job.grade_label
-        pJob.grade.level = data.job.grade
+        pJob.Grade = {}
+        pJob.Grade.name = data.job.grade_name
+        pJob.Grade.label = data.job.grade_label
+        pJob.Grade.level = data.job.grade
+        
         local Pdata = {
             Pid = data.identifier,
             Name = data.name,
@@ -102,6 +103,8 @@ function Framework.GetPlayerFromPidS(pid)
     end
 end
 
+
+
 function Framework.NotiS(source, message, type, time) --- type = 'info', 'success', 'error'
     if Config.CustomNotifications then
         Custom.NotiS(source, message, type, time)
@@ -140,6 +143,15 @@ function Framework.RegisterServerCallback(name, callback)
         ESX.RegisterServerCallback(name, callback)
     end
 end
+
+Framework.RegisterServerCallback('710-lib:GetPlayerName', function(source, cb)
+    local Pdata = Framework.PlayerDataS(source)
+    if Pdata then
+        cb(Pdata.Name)
+    else
+        cb(false)
+    end
+end)
 
 function Framework.RegisterStash(stashid, stashlabel, stashslots, stashweightlimit, stashowner)
     if Config.Framework == 'esx' then
