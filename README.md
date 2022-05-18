@@ -1,5 +1,5 @@
-# WIP Release Date - May 10th 
-## Currently only fully works on ESX - QBCore fix ups will be may 9-10th! 
+# WIP Release Date - May 17-18 
+## Currently only fully works on ESX - QBCore fix ups will be may 17-18! 
 # Docs will be on http://Kmack710.info/docs
 # 710-Lib is A Multi-Framework Wrapper
 ### Any Scripts made with 710-lib Framework. Calls and export will work on Any framework(ESX and QBCore out of the box and any other one with some edits!)
@@ -11,7 +11,7 @@
 # Written to be SIMPLE to write in for Newer devs to get their creativity out there! 
 
 
-## EXPORT that must be used at the top of any script using 710-lib 
+## EXPORT that must be used at the top of any script using 710-lib
 ```lua
 -- Works on both server and client 
 local Framework = exports['710-lib']:GetFrameworkObject()
