@@ -14,7 +14,8 @@ function Framework.PlayerDataC()
             Bank = data.bank,
             Cash = data.money,
             Source = data.source,
-            Job = data.job,            
+            Job = data.job,
+            Notify = function(message, type, time) Framework.NotiC(message, type, time) end,            
         }
         return Pdata
     elseif Config.Framework == 'esx' then 

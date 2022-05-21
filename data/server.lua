@@ -5,27 +5,34 @@ end
 Framework = {}
  
 function Framework.PlayerDataS(source)
+    local source = tonumber(source) 
     if Config.Framework == 'qbcore' then
         local data = QBCore.Functions.GetPlayer(source)
+        local pJob = data.PlayerData.job
+        pJob.Grade = {}
+        pJob.Grade.name = pJob.grade.name
+        pJob.Grade.label = pJob.grade.name
+        pJob.Grade.level = pJob.grade.level
         local Pdata = {
             Pid = data.PlayerData.citizenid,
             Name = data.PlayerData.charinfo.firstname..' '..data.PlayerData.charinfo.lastname,
             Identifier = data.PlayerData.identifier,
             Bank = data.Functions.GetMoney('bank'),
             Cash = data.Functions.GetMoney('cash'),
-            Source = source,
+            Source = data.PlayerData.cid,
             RemoveItem = data.Functions.RemoveItem,
             AddItem = data.Functions.AddItem,  
             AddMoney = data.Functions.AddMoney, 
             RemoveMoney = data.Functions.RemoveMoney,
             AddBankMoney = function(amount) data.Functions.AddMoney('bank', amount) end,
             RemoveBankMoney = function(amount) data.Functions.RemoveMoney('bank', amount) end,
-            AddCash = function(amount) data.Functions.AddMoney('black_money', amount) end,
-            RemoveCash = function(amount) data.Functions.RemoveMoney('black_money', amount) end,
+            AddCash = function(amount) data.Functions.AddMoney('cash', amount) end,
+            RemoveCash = function(amount) data.Functions.RemoveMoney('cash', amount) end,
             AddDirtyMoney = function(amount) data.Functions.AddItem('markedbills', amount) end,
             RemoveDirtyMoney = function(amount) data.Functions.RemoveItem('markedbills', amount) end,
-            Job = data.PlayerData.job,
-            SetJob = data.setJob,
+            Job = pJob,
+            SetJob = data.Functions.SetJob,
+            Notify = function(message, type, time) Framework.NotiS(source, message, type, time) end,
         }
         return Pdata
     elseif Config.Framework == 'esx' then
@@ -55,6 +62,7 @@ function Framework.PlayerDataS(source)
             Job = pJob,
             SetJob = data.setJob,
             Notify = function(message, type, time) Framework.NotiS(source, message, type, time) end,
+            HasItem = data.hasItem,
             
         }
         return Pdata
@@ -85,18 +93,18 @@ function Framework.GetPlayerFromPidS(pid)
         end 
 
     elseif Config.Framework == 'qbcore' then
-        local data = QBCore.Functions.GetPlayer(pid)
+        local data = QBCore.Functions.GetPlayerByCitizenId(pid)
         local Pdata = {
-            Pid = data.PlayerData.citizenid,
+            Pid = pid,
             Name = data.PlayerData.charinfo.firstname..' '..data.PlayerData.charinfo.lastname,
             Identifier = data.PlayerData.identifier,
             Bank = data.Functions.GetMoney('bank'),
             Cash = data.Functions.GetMoney('cash'),
-            Source = data.source, 
+            Source = data.PlayerData.cid, 
             AddMoney = data.Functions.AddMoney, 
             RemoveMoney = data.Functions.RemoveMoney,
             Job = data.PlayerData.job,
-            SetJob = data.setJob,  
+            SetJob = data.Functions.SetJob,  
             
         }
         return Pdata
@@ -110,7 +118,8 @@ function Framework.NotiS(source, message, type, time) --- type = 'info', 'succes
         Custom.NotiS(source, message, type, time)
     else 
         if Config.Framework == 'qbcore' then
-            QBCore.Functions.Notify(source, message, type, time)
+            if type == 'info' then type = 'primary' end
+            TriggerClientEvent('QBCore:Notify', source, message, type, time)
         elseif Config.Framework == 'esx' then
             local Player = ESX.GetPlayerFromId(source)
             Player.showNotification(message)
@@ -129,7 +138,7 @@ function Framework.AdminCheck(source)
         end
     elseif Config.Framework == 'qbcore' then 
        local perms = QBCore.Functions.GetPermission(source)
-       if perms == 'admin' then
+       if perms.god == true or perms.admin == true then
             return true
         else
             return false
@@ -138,7 +147,7 @@ function Framework.AdminCheck(source)
 end 
 function Framework.RegisterServerCallback(name, callback)
     if Config.Framework == 'qbcore' then
-        QBCore.Functions.RegisterCallback(name, callback)
+        QBCore.Functions.CreateCallback(name, callback)
     elseif Config.Framework == 'esx' then
         ESX.RegisterServerCallback(name, callback)
     end

@@ -21,8 +21,8 @@ if Config.UseJobCommand then
             else 
                 Player.Notify('You are a '..Player.Job.grade.name ..' in '..Player.Job.name, 'success', 5000)
             end 
-        else 
+        else
             Player.Notify('You are a '..Player.Job.grade.name ..' in '..Player.Job.name, 'success', 5000)
         end
-    end)
+    end, false)
 end
