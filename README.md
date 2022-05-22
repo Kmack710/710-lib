@@ -1,9 +1,4 @@
-<<<<<<< Updated upstream
- # WIP
-## Currently only fully works on ESX - QBCore fix ups coming soon! 
-=======
-
->>>>>>> Stashed changes
+# Working now on ESX and QBCore - Still lots of features to come! 
 # Docs will be on http://Kmack710.info/docs
 # 710-Lib is A Multi-Framework Wrapper
 ### Any Scripts made with 710-lib Framework. Calls and export will work on Any framework(ESX and QBCore out of the box and any other one with some edits!)
