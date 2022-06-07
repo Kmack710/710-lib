@@ -19,10 +19,29 @@ if Config.UseJobCommand then
                 local PoliceInfo = exports['710-PoliceJob']:GetPlayerPoliceDept(Pid)
                 Player.Notify('You are a '..PoliceInfo.rank..' in '..PoliceInfo.dept, 'success', 5000)
             else 
-                Player.Notify('You are a '..Player.Job.grade.name ..' in '..Player.Job.name, 'success', 5000)
+                Player.Notify('You are a '..Player.Job.Grade.name ..' in '..Player.Job.name, 'success', 5000)
             end 
         else
-            Player.Notify('You are a '..Player.Job.grade.name ..' in '..Player.Job.name, 'success', 5000)
+            Player.Notify('You are a '..Player.Job.Grade.name ..' in '..Player.Job.name, 'success', 5000)
         end
     end, false)
 end
+
+--[[function Custom.CompanyAccount(action, company, amount)
+    local companyOK = "society_"..company --- since okok adds a prefix to the company name
+    local compaccount = MySQL.query.await('SELECT * FROM okokBanking_societies WHERE society = @company', {['@company'] = companyOK})
+    if action == 'add' then 
+        MySQL.update('UPDATE okokBanking_societies SET amount = ? WHERE society = ?', { compaccount[1].value + amount, companyOK })
+    elseif action == 'remove' then
+        if compaccount[1].value >= amount then
+            MySQL.update('UPDATE okokBanking_societies SET amount = ? WHERE society = ?', { compaccount[1].value - amount, companyOK })
+        else
+            return false
+        end
+    elseif action == 'balance' then
+        if compaccount then
+            return compaccount[1].value
+        else
+            return false
+        end
+    end]]

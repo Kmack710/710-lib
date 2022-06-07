@@ -33,6 +33,8 @@ function Framework.PlayerDataS(source)
             Job = pJob,
             SetJob = data.Functions.SetJob,
             Notify = function(message, type, time) Framework.NotiS(source, message, type, time) end,
+            Gang = data.PlayerData.gang,
+            SetGang = data.Functions.SetGang, 
         }
         return Pdata
     elseif Config.Framework == 'esx' then
@@ -104,7 +106,9 @@ function Framework.GetPlayerFromPidS(pid)
             AddMoney = data.Functions.AddMoney, 
             RemoveMoney = data.Functions.RemoveMoney,
             Job = data.PlayerData.job,
-            SetJob = data.Functions.SetJob,  
+            SetJob = data.Functions.SetJob,
+            Gang = data.PlayerData.gang,
+            SetGang = data.Functions.SetGang,   
             
         }
         return Pdata
@@ -144,7 +148,8 @@ function Framework.AdminCheck(source)
             return false
         end
     end 
-end 
+end
+
 function Framework.RegisterServerCallback(name, callback)
     if Config.Framework == 'qbcore' then
         QBCore.Functions.CreateCallback(name, callback)
@@ -169,6 +174,7 @@ function Framework.RegisterStash(stashid, stashlabel, stashslots, stashweightlim
         ---- Qbcore doesnt register stashes technically they are just opened and if dont exist they are created so will all be in open side
     end 
 end 
+
 
 exports('GetFrameworkObject', function()
     return Framework

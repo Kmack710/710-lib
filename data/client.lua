@@ -7,6 +7,11 @@ Framework = {}
 function Framework.PlayerDataC()
     if Config.Framework == 'qbcore' then 
         local data = QBCore.Functions.GetPlayerData()
+        local pJob = data.job
+        pJob.Grade = {}
+        pJob.Grade.name = pJob.grade.name
+        pJob.Grade.label = pJob.grade.name
+        pJob.Grade.level = pJob.grade.level
         local Pdata = {
             Pid = data.citizenid,
             Name = data.charinfo.firstname..' '..data.charinfo.lastname,
@@ -14,12 +19,13 @@ function Framework.PlayerDataC()
             Bank = data.bank,
             Cash = data.money,
             Source = data.source,
-            Job = data.job,
-            Notify = function(message, type, time) Framework.NotiC(message, type, time) end,            
+            Job = pJob,
+            Notify = function(message, type, time) Framework.NotiC(message, type, time) end,
+            Gang = data.gang,            
         }
         return Pdata
     elseif Config.Framework == 'esx' then 
-        local data = ESX.GetPlayerData()
+        local data = ESX.GetPlayerData() 
         local pAccount = data.accounts
         local pBank = {}
         local pCash = {}
@@ -33,6 +39,11 @@ function Framework.PlayerDataC()
                 black = v.money
             end
         end
+        local pJob = data.job
+        pJob.Grade = {}
+        pJob.Grade.name = data.job.grade_name
+        pJob.Grade.label = data.job.grade_label
+        pJob.Grade.level = data.job.grade
         local Pdata = {
             Pid = data.identifier,
             Name = Framework.TriggerServerCallback('710-lib:GetPlayerName'),
@@ -41,7 +52,7 @@ function Framework.PlayerDataC()
             Cash = pCash,
             Dirty = pDirty,
             Source = data.playerId,
-            Job = data.job, 
+            Job = pJob, 
             Notify = function(message, type, time) Framework.NotiC(message, type, time) end,           
         
         }
@@ -63,7 +74,7 @@ function Framework.GetClosestVehicle(coords)
     elseif Config.Framework == 'esx' then
         return ESX.Game.GetClosestVehicle(coords)
     end
-end 
+end   
 
 function Framework.TriggerServerCallback(name, ...)
     if Config.Framework == 'qbcore' then  --- Credit to Irdris for the Promise chunk of code built into this for Security resasons! 
@@ -98,7 +109,10 @@ end
 
 function Framework.OpenStash(stashlabel, stashslotsweight)
     if Config.Framework == 'qbcore' then
-        TriggerServerEvent('inventory:server:OpenInventory', 'stash', stashlabel, stashslotsweight)
+        TriggerServerEvent("inventory:server:OpenInventory", "stash", stashlabel, {
+            maxweight = stashslotsweight.maxweight,
+            slots = stashslotsweight.slots,
+        })
         TriggerEvent("inventory:client:SetCurrentStash", stashlabel)
     elseif Config.Framework == 'esx' then
         TriggerServerEvent('ox:loadStashes') 
@@ -187,3 +201,4 @@ end)
 exports('GetFrameworkObject', function()
     return Framework
 end)
+

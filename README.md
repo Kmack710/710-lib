@@ -1,29 +1,17 @@
-<<<<<<< Updated upstream
- # WIP
-## Currently only fully works on ESX - QBCore fix ups coming soon! 
-=======
-
->>>>>>> Stashed changes
-# Docs will be on http://Kmack710.info/docs
-# 710-Lib is A Multi-Framework Wrapper
+# Docs on http://Kmack710.info/docs
+# 710-Lib is A Multi-Framework Wrapper! 
 ### Any Scripts made with 710-lib Framework. Calls and export will work on Any framework(ESX and QBCore out of the box and any other one with some edits!)
 ## PR Changes if updates happen to frameworks or if you want to add another popular one like VRP! 
 ### There will still be some things that you will need to do specifc in your scripts but this removes most of the frame work calls with 710-lib calls. (Examples- Inventory systems, Clothing systems and stuff like that since people change them so much its harder to keep something like that going in here)
 
 
-
 # Written to be SIMPLE to write in for Newer devs to get their creativity out there! 
-
 
 ## EXPORT that must be used at the top of any script using 710-lib 
 ```lua
 -- Works on both server and client 
 local Framework = exports['710-lib']:GetFrameworkObject()
 ```
-
-
-
-
 
 # Server Functions 
 ## PlayerData 

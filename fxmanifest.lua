@@ -2,7 +2,7 @@ fx_version 'adamant'
 
 game 'gta5'
 
-description 'Kmack710 - ESX - '
+description 'Kmack710 710-lib'
 
 version '1.0.0'
 
