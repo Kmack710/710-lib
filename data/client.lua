@@ -197,6 +197,16 @@ AddEventHandler('710-lib:PlayerLoaded', function()
     -- end)
 end)
 
+function Framework.GetJobLabel(job)
+	local JobLabel = Framework.TriggerServerCallback('710-lib:GetJobLabel', job)
+    if JobLabel then 
+        return JobLabel
+    else
+        return false
+    end
+    
+end 
+
 
 exports('GetFrameworkObject', function()
     return Framework

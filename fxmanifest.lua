@@ -4,10 +4,10 @@ game 'gta5'
 
 description 'Kmack710 710-lib'
 
-version '1.0.0'
+version '1.0.1'
 
 shared_scripts {
-    '@es_extended/imports.lua', --- Command out if not using ESX 
+   -- '@es_extended/imports.lua', --- Command out if not using ESX 
     'configs/config.lua',
 }
 

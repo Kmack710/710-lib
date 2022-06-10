@@ -5,13 +5,19 @@
 ### There will still be some things that you will need to do specifc in your scripts but this removes most of the frame work calls with 710-lib calls. (Examples- Inventory systems, Clothing systems and stuff like that since people change them so much its harder to keep something like that going in here)
 
 
+
 # Written to be SIMPLE to write in for Newer devs to get their creativity out there! 
+
 
 ## EXPORT that must be used at the top of any script using 710-lib 
 ```lua
 -- Works on both server and client 
 local Framework = exports['710-lib']:GetFrameworkObject()
 ```
+
+
+
+
 
 # Server Functions 
 ## PlayerData 

@@ -118,6 +118,7 @@ end
 
 
 function Framework.NotiS(source, message, type, time) --- type = 'info', 'success', 'error'
+    if type == nil then type = 'info' end
     if Config.CustomNotifications then
         Custom.NotiS(source, message, type, time)
     else 
@@ -173,8 +174,32 @@ function Framework.RegisterStash(stashid, stashlabel, stashslots, stashweightlim
     elseif Config.Framework == 'qbcore' then 
         ---- Qbcore doesnt register stashes technically they are just opened and if dont exist they are created so will all be in open side
     end 
+end
+
+function Framework.CreateUseableItem(item, cb)
+    if Config.Framework == 'qbcore' then 
+        QBCore.Functions.CreateUseableItem(item, cb) 
+    elseif Config.Framework == 'esx' then
+        ESX.RegisterUsableItem(item, cb)
+    end 
 end 
 
+function Framework.GetJobLabel(job)
+	if Config.Framework == 'qbcore' then 
+		return QBCore.Shared.Jobs[job].label
+	elseif Config.Framework == 'esx' then 
+		return ESX.GetJobs()[job].label
+	end
+end 
+
+Framework.RegisterServerCallback('710-lib:GetJobLabel', function(source, cb, job)
+    local jobLabel = Framework.GetJobLabel(job)
+    if jobLabel then
+        cb(jobLabel)
+    else
+        cb(false)
+    end
+end)
 
 exports('GetFrameworkObject', function()
     return Framework
