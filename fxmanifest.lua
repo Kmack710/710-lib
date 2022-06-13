@@ -7,7 +7,7 @@ description 'Kmack710 710-lib'
 version '1.0.1'
 
 shared_scripts {
-   -- '@es_extended/imports.lua', --- Command out if not using ESX 
+   '@es_extended/imports.lua', --- Comment out if not using ESX 
     'configs/config.lua',
 }
 
@@ -24,5 +24,9 @@ client_scripts {
     
 }
 
+dependencies {
+	'es_extended' -- Comment out if using qbcore 
+   -- 'qb-core' --- Comment out if using ESX 
+}
 
 lua54 'yes'

@@ -185,10 +185,19 @@ function Framework.CreateUseableItem(item, cb)
 end 
 
 function Framework.GetJobLabel(job)
+    if tonumber(job) ~= nil then return false end 
 	if Config.Framework == 'qbcore' then 
-		return QBCore.Shared.Jobs[job].label
-	elseif Config.Framework == 'esx' then 
-		return ESX.GetJobs()[job].label
+        if QBCore.Shared.Jobs[job].label ~= nil then
+            return QBCore.Shared.Jobs[job].label
+        else
+            return false
+        end
+	elseif Config.Framework == 'esx' then
+        if ESX.GetJobs()[job].label ~= nil then
+            return ESX.GetJobs()[job].label
+        else
+            return false
+        end
 	end
 end 
 

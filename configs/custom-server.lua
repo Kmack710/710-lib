@@ -19,10 +19,10 @@ if Config.UseJobCommand then
                 local PoliceInfo = exports['710-PoliceJob']:GetPlayerPoliceDept(Pid)
                 Player.Notify('You are a '..PoliceInfo.rank..' in '..PoliceInfo.dept, 'success', 5000)
             else 
-                Player.Notify('You are a '..Player.Job.Grade.name ..' in '..Player.Job.name, 'success', 5000)
+                Player.Notify('You are a '..Player.Job.Grade.label ..' in '..Player.Job.label, 'success', 5000)
             end 
         else
-            Player.Notify('You are a '..Player.Job.Grade.name ..' in '..Player.Job.name, 'success', 5000)
+            Player.Notify('You are a '..Player.Job.Grade.label ..' in '..Player.Job.label, 'success', 5000)
         end
     end, false)
 end

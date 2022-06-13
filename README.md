@@ -1,5 +1,5 @@
-# Docs on http://Kmack710.info/docs
-# 710-Lib is A Multi-Framework Wrapper! 
+# Docs will be on http://Kmack710.info/docs
+# 710-Lib is A Multi-Framework Wrapper
 ### Any Scripts made with 710-lib Framework. Calls and export will work on Any framework(ESX and QBCore out of the box and any other one with some edits!)
 ## PR Changes if updates happen to frameworks or if you want to add another popular one like VRP! 
 ### There will still be some things that you will need to do specifc in your scripts but this removes most of the frame work calls with 710-lib calls. (Examples- Inventory systems, Clothing systems and stuff like that since people change them so much its harder to keep something like that going in here)

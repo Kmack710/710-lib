@@ -143,13 +143,13 @@ function Framework.DrawText(action, text)
     if Config.CustomDrawText_CL == false then 
         if action == 'open' then
             if Config.Framework == 'qbcore' then
-                QBCore.Functions.DrawText(action, text)
+                exports['qb-core']:DrawText(text, 'left')
             elseif Config.Framework == 'esx' then
                 exports['esx_textui']:TextUI(text)
             end
         else
             if Config.Framework == 'qbcore' then
-                QBCore.Functions.DrawText(action, text)
+                exports['qb-core']:HideText()
             elseif Config.Framework == 'esx' then
                 Custom.DrawTextUI('close') 
                 exports['esx_textui']:HideUI()
