@@ -96,22 +96,27 @@ function Framework.GetPlayerFromPidS(pid)
 
     elseif Config.Framework == 'qbcore' then
         local data = QBCore.Functions.GetPlayerByCitizenId(pid)
-        local Pdata = {
-            Pid = pid,
-            Name = data.PlayerData.charinfo.firstname..' '..data.PlayerData.charinfo.lastname,
-            Identifier = data.PlayerData.identifier,
-            Bank = data.Functions.GetMoney('bank'),
-            Cash = data.Functions.GetMoney('cash'),
-            Source = data.PlayerData.cid, 
-            AddMoney = data.Functions.AddMoney, 
-            RemoveMoney = data.Functions.RemoveMoney,
-            Job = data.PlayerData.job,
-            SetJob = data.Functions.SetJob,
-            Gang = data.PlayerData.gang,
-            SetGang = data.Functions.SetGang,   
-            
-        }
-        return Pdata
+        if data ~= nil then
+            local Pdata = {
+                Pid = pid,
+                Name = data.PlayerData.charinfo.firstname..' '..data.PlayerData.charinfo.lastname,
+                Identifier = data.PlayerData.identifier,
+                Bank = data.Functions.GetMoney('bank'),
+                Cash = data.Functions.GetMoney('cash'),
+                Source = data.PlayerData.cid, 
+                AddMoney = data.Functions.AddMoney, 
+                RemoveMoney = data.Functions.RemoveMoney,
+                Job = data.PlayerData.job,
+                SetJob = data.Functions.SetJob,
+                Gang = data.PlayerData.gang,
+                SetGang = data.Functions.SetGang,   
+                
+            }
+            return Pdata
+        else 
+            return false
+        end 
+
     end
 end
 
