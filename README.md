@@ -1,4 +1,3 @@
-# Docs will be on http://Kmack710.info/docs
 # 710-Lib is A Multi-Framework Wrapper
 ### Any Scripts made with 710-lib Framework. Calls and export will work on Any framework(ESX and QBCore out of the box and any other one with some edits!)
 ## PR Changes if updates happen to frameworks or if you want to add another popular one like VRP! 
