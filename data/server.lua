@@ -3,7 +3,7 @@ if Config.Framework == 'qbcore' then
 end 
 
 Framework = {}
- 
+
 function Framework.PlayerDataS(source)
     local source = tonumber(source) 
     if Config.Framework == 'qbcore' then
@@ -36,6 +36,11 @@ function Framework.PlayerDataS(source)
             Gang = data.PlayerData.gang,
             SetGang = data.Functions.SetGang, 
         }
+        if Config.Using710Crypto then 
+            Pdata.AddCrypto = function(crypto, amount) return exports['710-crypto']:addCrypto(data.PlayerData.citizenid, crypto, amount) end
+            Pdata.RemoveCrypto = function(crypto, amount) return exports['710-crypto']:removeCrypto(data.PlayerData.citizenid, crypto, amount) end
+            Pdata.CryptoBalance = function(crypto) return exports['710-crypto']:getCryptoBalance(data.PlayerData.citizenid, crypto) end
+        end 
         return Pdata
     elseif Config.Framework == 'esx' then
         local data = ESX.GetPlayerFromId(source)
@@ -65,8 +70,12 @@ function Framework.PlayerDataS(source)
             SetJob = data.setJob,
             Notify = function(message, type, time) Framework.NotiS(source, message, type, time) end,
             HasItem = data.hasItem,
-            
         }
+        if Config.Using710Crypto then 
+            Pdata.AddCrypto = function(crypto, amount) return exports['710-crypto']:addCrypto(data.identifier, crypto, amount) end
+            Pdata.RemoveCrypto = function(crypto, amount) return exports['710-crypto']:removeCrypto(data.identifier, crypto, amount) end
+            Pdata.CryptoBalance = function(crypto) return exports['710-crypto']:getCryptoBalance(data.identifier, crypto) end
+        end
         return Pdata
     end
 end
@@ -116,7 +125,6 @@ function Framework.GetPlayerFromPidS(pid)
         else 
             return false
         end 
-
     end
 end
 
@@ -204,7 +212,15 @@ function Framework.GetJobLabel(job)
             return false
         end
 	end
-end 
+end
+
+function Framework.GetOnlinePlayers()
+    if Config.Framework == 'qbcore' then 
+        return QBCore.Functions.GetPlayers()
+    elseif Config.Framework == 'esx' then
+        return ESX.GetPlayers()
+    end 
+end
 
 Framework.RegisterServerCallback('710-lib:GetJobLabel', function(source, cb, job)
     local jobLabel = Framework.GetJobLabel(job)
@@ -214,6 +230,10 @@ Framework.RegisterServerCallback('710-lib:GetJobLabel', function(source, cb, job
         cb(false)
     end
 end)
+
+function Framework.Config()
+    return ShConfig
+end
 
 exports('GetFrameworkObject', function()
     return Framework

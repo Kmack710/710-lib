@@ -26,22 +26,3 @@ if Config.UseJobCommand then
         end
     end, false)
 end
-
---[[function Custom.CompanyAccount(action, company, amount)
-    local companyOK = "society_"..company --- since okok adds a prefix to the company name
-    local compaccount = MySQL.query.await('SELECT * FROM okokBanking_societies WHERE society = @company', {['@company'] = companyOK})
-    if action == 'add' then 
-        MySQL.update('UPDATE okokBanking_societies SET amount = ? WHERE society = ?', { compaccount[1].value + amount, companyOK })
-    elseif action == 'remove' then
-        if compaccount[1].value >= amount then
-            MySQL.update('UPDATE okokBanking_societies SET amount = ? WHERE society = ?', { compaccount[1].value - amount, companyOK })
-        else
-            return false
-        end
-    elseif action == 'balance' then
-        if compaccount then
-            return compaccount[1].value
-        else
-            return false
-        end
-    end]]

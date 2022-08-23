@@ -207,6 +207,9 @@ function Framework.GetJobLabel(job)
     
 end 
 
+function Framework.Config()
+    return ShConfig
+end 
 
 exports('GetFrameworkObject', function()
     return Framework

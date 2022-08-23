@@ -7,7 +7,7 @@ description 'Kmack710 710-lib'
 version '1.0.1'
 
 shared_scripts {
-  -- '@es_extended/imports.lua', --- Comment out if not using ESX 
+   --'@es_extended/imports.lua', --- Comment out if not using ESX 
     'configs/config.lua',
 }
 

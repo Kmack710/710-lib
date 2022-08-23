@@ -1,4 +1,5 @@
-# Docs will be on http://Kmack710.info/docs
+
+## Currently fully works on QBCore and ESX -- More coming maybe soon? 
 # 710-Lib is A Multi-Framework Wrapper
 ### Any Scripts made with 710-lib Framework. Calls and export will work on Any framework(ESX and QBCore out of the box and any other one with some edits!)
 ## PR Changes if updates happen to frameworks or if you want to add another popular one like VRP! 
@@ -14,10 +15,30 @@
 -- Works on both server and client 
 local Framework = exports['710-lib']:GetFrameworkObject()
 ```
+## Example on how to use the shared config in your own scripts! (Works server and client side)
+```lua
+local Framework = exports['710-lib']:GetFrameworkObject()
+if Framework.Config().MenuResource == 'qb-menu' then 
+--- do stuff here that calls for qb-menu 
+elseif Framework.Config().MenuResource == 'nh-context' then 
+--- do stuff here that calls for nh-context instead of qb-menu 
+else 
+    print('Invalid menu resource has been picked, This resource only supports qb-menu or nh-context')
+end 
 
+--- You can also just define the sharedConfig once at the top of your script and use it anywhere in that script easier like this 
+local Framework = exports['710-lib']:GetFrameworkObject()
+local GlobalConfig = Framework.Config()
 
+if GlobalConfig.MenuResource == 'qb-menu' then 
+--- do stuff here that calls for qb-menu 
+elseif GlobalConfig.MenuResource == 'nh-context' then 
+--- do stuff here that calls for nh-context instead of qb-menu 
+else 
+    print('Invalid menu resource has been picked, This resource only supports qb-menu or nh-context')
+end 
 
-
+```
 
 # Server Functions 
 ## PlayerData 
@@ -34,11 +55,22 @@ local Bank = Player.Bank --- Return Player Bank balance
 local Cash = Player.Cash --- Returns Player Cash Balance 
 local Dirty = Player.Dirty --- Returns  dirty money Only works for ESX right now qbcore coming soon. 
 local Source = Player.Source --- If you need to use or check player source for anything. 
-local AddMoney = Player.AddMoney("bank", 1000) --- adds 1000 to players bank 
-local AddMoney = Player.AddMoney("cash", 1000) --- adds 1000 to players cash
-local RemoveMoney =  Player.RemoveMoney("bank", 1000) --- same as above but removes instead 
-local RemoveMoney =  Player.RemoveMoney("cash", 1000)
 local Job = Player.Job --- Returns Job Table 
+Player.AddItem('water', 1) --- adds 1 water to the player 
+Player.RemoveItem('water', 1) --- removes 1 water from player
+Player.AddCash(500) --- adds 500 cash to the player defined above 
+Player.RemoveCash(500) --- Removes 500 cash from the player defined above 
+Player.AddBankMoney(500) -- Adds $500 to the bank 
+Player.RemoveBankMoney(500) -- removes $500 from bank 
+Player.AddDirtyMoney(500) --- Adds $500 dirty money 
+Player.RemoveDirtyMoney(500) --- Removes $500 dirty money 
+Player.SetJob('taxi', 1) --- sets player as taxi job rank 1 
+Player.Notify('hello this is a notification', 'info', 5000) ---- Info and the time are optional if you dont fill them out it will be 'info' and 5000ms (5 seconds )
+--- IF YOU HAVE 710-crypto these will work as well! 
+local cryptoBalance = Player.CryptoBalance('ElonCoin')
+Player.AddCrypto('ElonCoin', 69)
+Player.RemoveCrypto('ElonCoin', 69)
+
 ```
 ### Framework.GetPlayerFromPidS(pid)
 This takes CitizenID on QBCore or Lisence on ESX aka Framework.PlayerDataS(source).Pid 
@@ -73,7 +105,6 @@ Available list of options for Client side Basically same as server minus add/rem
 ```lua
 local Framework = exports['710-lib']:GetFrameworkObject()
 local Player = Framework.PlayerDataC()
-
 local Pid = Player.Pid -- CitizenID / Lisence on ESX for tagging stuff to specific members 
 local Name = Player.Name -- Returns players first and last name 
 local Identifier = Player.Identifier --- Returns Player Lisence 
