@@ -35,12 +35,20 @@ function Framework.PlayerDataS(source)
             Notify = function(message, type, time) Framework.NotiS(source, message, type, time) end,
             Gang = data.PlayerData.gang,
             SetGang = data.Functions.SetGang, 
+            QBDuty = data.PlayerData.job.onduty,
+            SetDuty = data.Functions.SetJobDuty,
         }
         if Config.Using710Crypto then 
             Pdata.AddCrypto = function(crypto, amount) return exports['710-crypto']:addCrypto(data.PlayerData.citizenid, crypto, amount) end
             Pdata.RemoveCrypto = function(crypto, amount) return exports['710-crypto']:removeCrypto(data.PlayerData.citizenid, crypto, amount) end
             Pdata.CryptoBalance = function(crypto) return exports['710-crypto']:getCryptoBalance(data.PlayerData.citizenid, crypto) end
-        end 
+        end
+        if Config.Using710Management then 
+            Pdata.AddCompanyMoney = function(amount) return exports['710-Management']:AddAccountMoney(data.PlayerData.job.name, amount) end
+            Pdata.RemoveCompanyMoney = function(amount) return exports['710-Management']:RemoveAccountMoney(data.PlayerData.job.name, amount) end
+            Pdata.CompanyBalance = function() return exports['710-Management']:GetManagementAccount(data.PlayerData.job.name).balance end
+            Pdata.Duty = function() return exports['710-Management']:CheckIfPlayerOnDuty(source) end
+        end  
         return Pdata
     elseif Config.Framework == 'esx' then
         local data = ESX.GetPlayerFromId(source)
@@ -75,6 +83,12 @@ function Framework.PlayerDataS(source)
             Pdata.AddCrypto = function(crypto, amount) return exports['710-crypto']:addCrypto(data.identifier, crypto, amount) end
             Pdata.RemoveCrypto = function(crypto, amount) return exports['710-crypto']:removeCrypto(data.identifier, crypto, amount) end
             Pdata.CryptoBalance = function(crypto) return exports['710-crypto']:getCryptoBalance(data.identifier, crypto) end
+        end
+        if Config.Using710Management then 
+            Pdata.AddCompanyMoney = function(amount) return exports['710-Management']:AddAccountMoney(data.job.name, amount) end
+            Pdata.RemoveCompanyMoney = function(amount) return exports['710-Management']:RemoveAccountMoney(data.job.name, amount) end
+            Pdata.CompanyBalance = function() return exports['710-Management']:GetManagementAccount(data.job.name).balance end
+            Pdata.Duty = function() return exports['710-Management']:CheckIfPlayerOnDuty(source) end
         end
         return Pdata
     end
@@ -189,6 +203,12 @@ function Framework.RegisterStash(stashid, stashlabel, stashslots, stashweightlim
     end 
 end
 
+function Framework.AddItemToStash(stashid, item, amount)
+    if Config.Inventory ~= 'ox-inventory' then
+
+    end
+end
+
 function Framework.CreateUseableItem(item, cb)
     if Config.Framework == 'qbcore' then 
         QBCore.Functions.CreateUseableItem(item, cb) 
@@ -237,4 +257,30 @@ end
 
 exports('GetFrameworkObject', function()
     return Framework
+end)
+
+
+AddEventHandler('onServerResourceStart', function(resourceName)
+    if resourceName == GetCurrentResourceName() then 
+        CreateThread(function()
+            Wait(10055)
+            updatePath = "/Kmack710/710-lib" -- your git user/repo path
+            resourceName = GetCurrentResourceName() -- the resource name
+            function checkVersion(err,responseText, headers)
+                local curVersion = tonumber(1.2) -- make sure the "version" file actually exists in your resource root!
+                local rresponseText = tonumber(responseText)
+                if curVersion ~= rresponseText and curVersion < rresponseText then
+                    print("^1################# RESOURCE OUT OF DATE ###############################")
+                    print("^1"..resourceName.." is outdated, New Version: "..responseText.."Your Version: "..curVersion.." please update from https://github.com/Kmack710/710-lib")
+                    print("############### Please Download the newest version ######################")
+                elseif curVersion > rresponseText then
+                    print("^2"..resourceName.." is up to date, have fun!")
+                else
+                    print("^2"..resourceName.." is up to date, have fun!")
+                end
+            end
+            
+            PerformHttpRequest("https://raw.githubusercontent.com"..updatePath.."/master/version", checkVersion, "GET")
+        end)
+    end
 end)

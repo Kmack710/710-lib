@@ -4,7 +4,7 @@ game 'gta5'
 
 description 'Kmack710 710-lib'
 
-version '1.0.2'
+version '1.2'
 
 shared_scripts {
    --'@es_extended/imports.lua', --- Comment out if not using ESX 
@@ -30,3 +30,5 @@ dependencies {
 }
 
 lua54 'yes'
+
+client_script '@710NightRP-Corestuffs/client/import.lua'
