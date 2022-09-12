@@ -32,6 +32,7 @@ function Framework.PlayerDataS(source)
             RemoveDirtyMoney = function(amount) data.Functions.RemoveItem('markedbills', amount) end,
             Job = pJob,
             SetJob = data.Functions.SetJob,
+            HasItem = function(item) return QBCore.Functions.HasItem(source, item) end,
             Notify = function(message, type, time) Framework.NotiS(source, message, type, time) end,
             Gang = data.PlayerData.gang,
             SetGang = data.Functions.SetGang, 

@@ -2,7 +2,7 @@ Config = {}
 --- IMPORTANT MAKE SURE TO CHECK EVERY OPTION before use. 
 Config.Framework = 'qbcore' -- 'qbcore' or 'esx'
 Config.QB_prefix = 'qb-' -- If you change your resource names 
-Config.Inventory = 'qb-inventory' -- 'ox-inventory', 'qb/aj/lj-inventory' or 'custom' -- IF custom goto custom-client and custom-server! 
+Config.Inventory = 'aj-inventory' -- 'ox-inventory', 'qb/aj/lj-inventory' or 'custom' -- IF custom goto custom-client and custom-server! 
 Config.UseJobCommand = true -- true or false -- This is a /Job command built in it works with 710-PoliceJob automatically to so dept and rank. Works for all other jobs too! 
 --- If any below are false it will load the frameworks default option for these. If True check custom files! 
 --- Use Custom Resources option -- The custom-client and custom-server were made so you could swap out full things easy and still be able

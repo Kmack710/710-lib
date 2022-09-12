@@ -32,11 +32,11 @@ function Framework.PlayerDataC()
         local pDirty = {}
         for k,v in pairs(pAccount) do
             if v.name == 'bank' then
-                bank = v.money
+                pBank = v.money
             elseif v.name == 'money' then
-                cash = v.money
+                pCash = v.money
             elseif v.name == 'black_money' then
-                black = v.money
+                pDirty = v.money
             end
         end
         local pJob = data.job
