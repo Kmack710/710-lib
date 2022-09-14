@@ -268,7 +268,7 @@ AddEventHandler('onServerResourceStart', function(resourceName)
             updatePath = "/Kmack710/710-lib" -- your git user/repo path
             resourceName = GetCurrentResourceName() -- the resource name
             function checkVersion(err,responseText, headers)
-                local curVersion = tonumber(1.2) -- make sure the "version" file actually exists in your resource root!
+                local curVersion = tonumber(1.3) -- make sure the "version" file actually exists in your resource root!
                 local rresponseText = tonumber(responseText)
                 if curVersion ~= rresponseText and curVersion < rresponseText then
                     print("^1################# RESOURCE OUT OF DATE ###############################")
