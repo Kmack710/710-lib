@@ -5,7 +5,7 @@ end
 Framework = {}
 
 function Framework.PlayerDataS(source)
-    local source = tonumber(source) 
+    local source = tonumber(source)
     if Config.Framework == 'qbcore' then
         local data = QBCore.Functions.GetPlayer(source)
         local pJob = data.PlayerData.job
@@ -16,7 +16,7 @@ function Framework.PlayerDataS(source)
         local Pdata = {
             Pid = data.PlayerData.citizenid,
             Name = data.PlayerData.charinfo.firstname..' '..data.PlayerData.charinfo.lastname,
-            Identifier = data.PlayerData.identifier,
+            Identifier = data.PlayerData.license,
             Bank = data.Functions.GetMoney('bank'),
             Cash = data.Functions.GetMoney('cash'),
             Source = data.PlayerData.cid,
@@ -80,12 +80,12 @@ function Framework.PlayerDataS(source)
             Notify = function(message, type, time) Framework.NotiS(source, message, type, time) end,
             HasItem = data.hasItem,
         }
-        if Config.Using710Crypto then 
+        if Config.Using710Crypto then
             Pdata.AddCrypto = function(crypto, amount) return exports['710-crypto']:addCrypto(data.identifier, crypto, amount) end
             Pdata.RemoveCrypto = function(crypto, amount) return exports['710-crypto']:removeCrypto(data.identifier, crypto, amount) end
             Pdata.CryptoBalance = function(crypto) return exports['710-crypto']:getCryptoBalance(data.identifier, crypto) end
         end
-        if Config.Using710Management then 
+        if Config.Using710Management then
             Pdata.AddCompanyMoney = function(amount) return exports['710-Management']:AddAccountMoney(data.job.name, amount) end
             Pdata.RemoveCompanyMoney = function(amount) return exports['710-Management']:RemoveAccountMoney(data.job.name, amount) end
             Pdata.CompanyBalance = function() return exports['710-Management']:GetManagementAccount(data.job.name).balance end
@@ -268,7 +268,7 @@ AddEventHandler('onServerResourceStart', function(resourceName)
             updatePath = "/Kmack710/710-lib" -- your git user/repo path
             resourceName = GetCurrentResourceName() -- the resource name
             function checkVersion(err,responseText, headers)
-                local curVersion = tonumber(1.3) -- make sure the "version" file actually exists in your resource root!
+                local curVersion = tonumber(1.4) -- make sure the "version" file actually exists in your resource root!
                 local rresponseText = tonumber(responseText)
                 if curVersion ~= rresponseText and curVersion < rresponseText then
                     print("^1################# RESOURCE OUT OF DATE ###############################")

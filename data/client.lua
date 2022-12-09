@@ -53,12 +53,12 @@ function Framework.PlayerDataC()
             Dirty = pDirty,
             Source = data.playerId,
             Job = pJob, 
-            Notify = function(message, type, time) Framework.NotiC(message, type, time) end,           
+            Notify = function(message, type, time) Framework.NotiC(message, type, time) end,      
         
         }
-        return Pdata 
+        return Pdata
     end
-end 
+end
 
 function Framework.GetClosestPlayer(coords)
     if Config.Framework == 'qbcore' then 
@@ -66,7 +66,7 @@ function Framework.GetClosestPlayer(coords)
     elseif Config.Framework == 'esx' then 
         return ESX.Game.GetClosestPlayer(coords)
     end
-end  
+end
 
 function Framework.GetClosestVehicle(coords)
     if Config.Framework == 'qbcore' then
@@ -74,7 +74,15 @@ function Framework.GetClosestVehicle(coords)
     elseif Config.Framework == 'esx' then
         return ESX.Game.GetClosestVehicle(coords)
     end
-end   
+end
+
+function Framework.GetVehicleProperties(veh)
+    if Config.Framework == 'qbcore' then
+        return QBCore.Functions.GetVehicleProperties(veh)
+    elseif Config.Framework == 'esx' then
+        return ESX.Game.GetVehicleProperties(veh)
+    end
+end
 
 function Framework.TriggerServerCallback(name, ...)
     if Config.Framework == 'qbcore' then  --- Credit to Irdris for the Promise chunk of code built into this for Security resasons! 
@@ -105,7 +113,7 @@ function Framework.TriggerServerCallback(name, ...)
         p = nil
         return result
     end
-end 
+end
 
 function Framework.OpenStash(stashlabel, stashslotsweight)
     if Config.Framework == 'qbcore' then
@@ -168,15 +176,17 @@ function Framework.NotiC(message, type, time)
     if Config.CustomNotifications then
         Custom.NotiC(message, type, time)
     else
+        if type == nil then type = 'info' end
         if time == nil then time = 3000 end
         if Config.Framework == 'qbcore' then
             if type == 'info' then type = 'primary' end
             QBCore.Functions.Notify(message, type, time)
         elseif Config.Framework == 'esx' then
-            ESX.ShowNotification(message, time, type)
+            ESX.ShowNotification(message, type, time)
+           -- ESX.ShowNotification(message, type, length)
         end
-    end 
-end 
+    end
+end
 
 if Config.Framework == 'qbcore' then
     AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
