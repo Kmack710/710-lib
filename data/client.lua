@@ -198,14 +198,22 @@ elseif Config.Framework == 'esx' then
         TriggerEvent('710-lib:PlayerLoaded')
     end) 
 end
+local PlayerIsLoaded = false
 
 RegisterNetEvent('710-lib:PlayerLoaded')
 AddEventHandler('710-lib:PlayerLoaded', function()
+    PlayerIsLoaded = true
+    Wait(1000)
+    TriggerServerEvent('710-lib:makeNewUserInDB') --- To double check user is in 710_users table if not add them as some of my scripts use this
     -- Do nothing this is just to trigger things within scripts with 
     -- AddEventHandler('710-lib:PlayerLoaded', function()
     --- Code you want to execute here when the player loads
     -- end)
 end)
+
+Framework.IsPlayerLoaded = function()
+    return PlayerIsLoaded
+end
 
 function Framework.GetJobLabel(job)
 	local JobLabel = Framework.TriggerServerCallback('710-lib:GetJobLabel', job)
@@ -217,9 +225,28 @@ function Framework.GetJobLabel(job)
     
 end 
 
+function Framework.GetItemLabel(item)
+    if Config.Inventory == 'ox_inventory' then
+        for k, data in pairs(exports.ox_inventory:Items()) do
+            if k == item then
+                return data.label
+            end
+        end
+    elseif Config.Framework == 'qbcore' then
+        return QBCore.Shared.Items[item]['label']
+    else
+        return ESX.Items[item].label
+    end
+end
+
+
+
+
+
 function Framework.Config()
     return ShConfig
 end 
+
 
 exports('GetFrameworkObject', function()
     return Framework

@@ -19,7 +19,7 @@ function Framework.PlayerDataS(source)
             Identifier = data.PlayerData.license,
             Bank = data.Functions.GetMoney('bank'),
             Cash = data.Functions.GetMoney('cash'),
-            Source = data.PlayerData.cid,
+            Source = data.PlayerData.source,
             RemoveItem = data.Functions.RemoveItem,
             AddItem = data.Functions.AddItem,  
             AddMoney = data.Functions.AddMoney, 
@@ -32,7 +32,7 @@ function Framework.PlayerDataS(source)
             RemoveDirtyMoney = function(amount) data.Functions.RemoveItem('markedbills', amount) end,
             Job = pJob,
             SetJob = data.Functions.SetJob,
-            HasItem = function(item) return QBCore.Functions.HasItem(source, item) end,
+            HasItem = function(item, amount) return QBCore.Functions.HasItem(source, item, amount) end,
             Notify = function(message, type, time) Framework.NotiS(source, message, type, time) end,
             Gang = data.PlayerData.gang,
             SetGang = data.Functions.SetGang, 
@@ -127,7 +127,7 @@ function Framework.GetPlayerFromPidS(pid)
                 Identifier = data.PlayerData.identifier,
                 Bank = data.Functions.GetMoney('bank'),
                 Cash = data.Functions.GetMoney('cash'),
-                Source = data.PlayerData.cid, 
+                Source = data.PlayerData.source, 
                 AddMoney = data.Functions.AddMoney, 
                 RemoveMoney = data.Functions.RemoveMoney,
                 Job = data.PlayerData.job,
@@ -258,6 +258,29 @@ end
 
 exports('GetFrameworkObject', function()
     return Framework
+end)
+
+RegisterNetEvent('710-lib:makeNewUserInDB', function()
+    local source = source
+    local Player = Framework.PlayerDataS(source)
+    local isInDB = false
+    if ShConfig.OxSQL == 'new' then
+        local result = MySQL.query.await("SELECT * FROM 710_users WHERE pid = @pid", {['@pid'] = Player.Pid})
+        if result[1] ~= nil then
+            isInDB = true
+        end
+    else 
+        local result = exports.oxmysql:fetchSync("SELECT * FROM 710_users WHERE pid = @pid", {['@pid'] = Player.Pid})
+        if result[1] ~= nil then
+            isInDB = true
+        end
+    end
+    if isInDB then return end
+    if ShConfig.OxSQL == 'new' then
+        MySQL.query("INSERT INTO 710_users (pid, name) VALUES (@pid, @name)", {['@pid'] = Player.Pid, ['@name'] = Player.Name})
+    else 
+        exports.oxmysql:execute("INSERT INTO 710_users (pid, name) VALUES (@pid, @name)", {['@pid'] = Player.Pid, ['@name'] = Player.Name})
+    end
 end)
 
 
