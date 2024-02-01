@@ -61,70 +61,39 @@ function Framework.PlayerDataC()
 end
 
 function Framework.GetClosestPlayer(coords)
-    if Config.Framework == 'qbcore' then 
+    return lib.getClosestPlayer(coords)
+    --[[if Config.Framework == 'qbcore' then  --- depreciated, use ox_lib directly
         return QBCore.Functions.GetClosestPlayer(coords)
     elseif Config.Framework == 'esx' then 
         return ESX.Game.GetClosestPlayer(coords)
-    end
+    end]]
 end
 
 function Framework.GetClosestVehicle(coords)
-    if Config.Framework == 'qbcore' then
-        return QBCore.Functions.GetClosestVehicle(coords)
-    elseif Config.Framework == 'esx' then
-        return ESX.Game.GetClosestVehicle(coords)
-    end
+    return lib.getClosestVehicle(coords)
 end
 
 function Framework.GetVehicleProperties(veh)
-    if Config.Framework == 'qbcore' then
-        return QBCore.Functions.GetVehicleProperties(veh)
-    elseif Config.Framework == 'esx' then
-        return ESX.Game.GetVehicleProperties(veh)
-    end
+    return lib.getVehicleProperties(veh)
 end
 
 function Framework.TriggerServerCallback(name, ...)
-    if Config.Framework == 'qbcore' then  --- Credit to Irdris for the Promise chunk of code built into this for Security resasons! 
-        local p = nil
-        local searchProfilePromise = function(...)  -- https://github.com/IdrisDose 
-            if p then return end
-            p = promise.new()
-    
-            QBCore.Functions.TriggerCallback(name, function(result)
-                p:resolve(result)
-            end, ...)
-            return Citizen.Await(p)
-        end
-        local result = searchProfilePromise(...) --- Credit to Irdris for the Promise chunk of code built into this for Security resasons! 
-        p = nil
-        return result
-    elseif Config.Framework == 'esx' then
-        local p = nil
-        local searchProfilePromise = function(...)  -- https://github.com/IdrisDose 
-            if p then return end
-            p = promise.new() --- Credit to Irdris for the Promise chunk of code built into this for Security resasons! 
-            ESX.TriggerServerCallback(name, function(result)  -- https://github.com/IdrisDose 
-                p:resolve(result)
-            end, ...)
-            return Citizen.Await(p)
-        end
-        local result = searchProfilePromise(...)  -- https://github.com/IdrisDose 
-        p = nil
-        return result
-    end
+    local result = lib.callback.await(name, false, ...)
+    return result
 end
 
 function Framework.OpenStash(stashlabel, stashslotsweight)
-    if Config.Framework == 'qbcore' then
+    if GetResourceState('ox_inventory') == 'started' then
+        TriggerServerEvent('ox:loadStashes') 
+        exports.ox_inventory:openInventory('stash', {id=stashlabel})
+    elseif GetResourceState('qb-inventory') == 'started' or GetResourceState('qs-inventory') == 'started' then --- qs supports same events as qb inventory, so we just use that.
         TriggerServerEvent("inventory:server:OpenInventory", "stash", stashlabel, {
             maxweight = stashslotsweight.maxweight,
             slots = stashslotsweight.slots,
         })
         TriggerEvent("inventory:client:SetCurrentStash", stashlabel)
-    elseif Config.Framework == 'esx' then
-        TriggerServerEvent('ox:loadStashes') 
-        exports.ox_inventory:openInventory('stash', {id=stashlabel})
+    else
+        --- add other inventories here.
     end
 end 
 
@@ -148,44 +117,26 @@ function Framework.GetSourceFromEntity(entity)
 end
 
 function Framework.DrawText(action, text)
-    if Config.CustomDrawText_CL == false then 
-        if action == 'open' then
-            if Config.Framework == 'qbcore' then
-                exports['qb-core']:DrawText(text, 'left')
-            elseif Config.Framework == 'esx' then
-                exports['esx_textui']:TextUI(text)
-            end
-        else
-            if Config.Framework == 'qbcore' then
-                exports['qb-core']:HideText()
-            elseif Config.Framework == 'esx' then
-                Custom.DrawTextUI('close') 
-                exports['esx_textui']:HideUI()
-            end 
-        end 
-    else 
-        if action == 'open' then
-            Custom.DrawTextUI('open', text) 
-        else
-            Custom.DrawTextUI('close') 
-        end
-    end 
+    if action == 'open' then
+        lib.showTextUI(text)
+        ---- Change to a different Drawtext if you have/want to here
+    else
+        lib.hideTextUI()
+        ---- Change to a different Drawtext if you have/want to here
+    end
 end
 
 function Framework.NotiC(message, type, time)
-    if Config.CustomNotifications then
-        Custom.NotiC(message, type, time)
-    else
-        if type == nil then type = 'info' end
-        if time == nil then time = 3000 end
-        if Config.Framework == 'qbcore' then
-            if type == 'info' then type = 'primary' end
-            QBCore.Functions.Notify(message, type, time)
-        elseif Config.Framework == 'esx' then
-            ESX.ShowNotification(message, type, time)
-           -- ESX.ShowNotification(message, type, length)
-        end
-    end
+    if type == nil then type = 'inform' end
+    if time == nil then time = 3000 end
+    if type == 'warn' then type = 'warning' end
+    if type == 'info' then type = 'inform' end
+    lib.notify({
+        description = message,
+        type = type,
+        duration = time,
+    })
+    --- if you want to use other notis or your framework ones add them here. and remove the lib.notify above
 end
 
 if Config.Framework == 'qbcore' then
@@ -235,7 +186,8 @@ function Framework.GetItemLabel(item)
     elseif Config.Framework == 'qbcore' then
         return QBCore.Shared.Items[item]['label']
     else
-        return ESX.Items[item].label
+        return Framework.TriggerServerCallback('710-lib:getItemLabel', item)
+       -- return ESX.Items[item].label
     end
 end
 
