@@ -46,7 +46,7 @@ function Framework.PlayerDataC()
         pJob.Grade.level = data.job.grade
         local Pdata = {
             Pid = data.identifier,
-            Name = Framework.TriggerServerCallback('710-lib:GetPlayerName'),
+            Name = lib.callback.await('710-lib:GetPlayerName', false),
             Identifier = data.identifier,
             Bank = pBank,
             Cash = pCash,
@@ -75,11 +75,6 @@ end
 
 function Framework.GetVehicleProperties(veh)
     return lib.getVehicleProperties(veh)
-end
-
-function Framework.TriggerServerCallback(name, ...)
-    local result = lib.callback.await(name, false, ...)
-    return result
 end
 
 function Framework.OpenStash(stashlabel, stashslotsweight)
@@ -167,7 +162,7 @@ Framework.IsPlayerLoaded = function()
 end
 
 function Framework.GetJobLabel(job)
-	local JobLabel = Framework.TriggerServerCallback('710-lib:GetJobLabel', job)
+	local JobLabel = lib.callback.await('710-lib:GetJobLabel', false, job)
     if JobLabel then 
         return JobLabel
     else
@@ -186,7 +181,7 @@ function Framework.GetItemLabel(item)
     elseif Config.Framework == 'qbcore' then
         return QBCore.Shared.Items[item]['label']
     else
-        return Framework.TriggerServerCallback('710-lib:getItemLabel', item)
+        return lib.callback.await('710-lib:getItemLabel', false, item)
        -- return ESX.Items[item].label
     end
 end

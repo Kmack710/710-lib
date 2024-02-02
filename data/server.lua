@@ -219,17 +219,13 @@ function Framework.AdminCheck(source)
     end 
 end
 
-function Framework.RegisterServerCallback(name, callback)
-    lib.callback.register(name, callback)
-    --- incase some spots were missed in scripts, we use ox lib directly now in each resource.
-end
 
-Framework.RegisterServerCallback('710-lib:GetPlayerName', function(source, cb)
+lib.callback.register('710-lib:GetPlayerName', function(source)
     local Pdata = Framework.PlayerDataS(source)
     if Pdata then
-        cb(Pdata.Name)
+        return Pdata.Name
     else
-        cb(false)
+        return false
     end
 end)
 
@@ -295,12 +291,12 @@ function Framework.GetOnlinePlayers()
     end 
 end
 
-Framework.RegisterServerCallback('710-lib:GetJobLabel', function(source, cb, job)
+lib.callback.register('710-lib:GetJobLabel', function(source, job)
     local jobLabel = Framework.GetJobLabel(job)
     if jobLabel then
-        cb(jobLabel)
+        return jobLabel
     else
-        cb(false)
+        return false
     end
 end)
 
@@ -326,7 +322,7 @@ function Framework.GetItemLabel(source, item)
     end
 end
 
-Framework.RegisterServerCallback('710-lib:getItemLabel', function(source, cb, item)
+lib.callback.register('710-lib:getItemLabel', function(source, item)
     if GetResourceState('ox_inventory') == 'started' then
         local result = exports.ox_inventory:getItem(item)
         if result ~= nil then
@@ -337,9 +333,9 @@ Framework.RegisterServerCallback('710-lib:getItemLabel', function(source, cb, it
     elseif Config.Framework == 'esx' then
         local result = MySQL.query.await("SELECT * FROM items WHERE name = @name", {['@name'] = item})
         if result ~= nil then
-            cb(result[1].label)
+            return result[1].label
         else
-            cb(false)
+            return false
         end
     else
         cb(QBCore.Shared.Items[item].label)
