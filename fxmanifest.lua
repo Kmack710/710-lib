@@ -4,7 +4,7 @@ game 'gta5'
 
 description 'Kmack710 710-lib'
 
-version '2.0'
+version '2.1'
 
 shared_scripts {
   -- '@es_extended/imports.lua', --- Comment out if not using ESX 
@@ -14,14 +14,11 @@ shared_scripts {
 
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
-    'data/server.lua',
-    'data/groups_server.lua',
-    
+    'data/server/*',
 }
 
 client_scripts {
-    'data/client.lua',
-    'data/groups_client.lua',
+    'data/client/*',
 }
 
 dependencies {
