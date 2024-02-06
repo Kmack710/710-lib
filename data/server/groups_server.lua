@@ -380,3 +380,22 @@ Framework.Group.AddMoney = function(groupid, type, amount)
         GiveGroupReward(groupid, type, amount)
     end
 end
+RegisterNetEvent('710-lib:server:groups:makeGPS', function(coords, label)
+    local source = source
+    TriggerClientEvent('ps-markgps:client:CreateMarker', source, coords, label)
+end)
+
+Framework.Group.MarkGPS = function(groupid, coords, label)
+    if groupSystem == 'ps' then
+        exports["ps-playergroups"]:GroupEvent(groupid, '710-lib:server:groups:makeGPS', {coords = coords, label = label})
+    elseif groupSystem == 'yflip' then
+        exports["yflip-phone"]:SendGroupEvent(groupid, '710-lib:server:groups:makeGPS', {coords = coords, label = label})
+    else
+        --- No group system detected so we use 710-lib's built in group system
+        for k,v in pairs(groupMembers(groupid)) do
+            local pPlayer = Framework.GetPlayerFromPidS(v)
+            local PSource = pPlayer.Source
+            TriggerClientEvent('ps-markgps:client:CreateMarker', PSource, coords, label)
+        end
+    end
+end

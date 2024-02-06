@@ -103,6 +103,18 @@ RegisterNetEvent('710-groups:InvitedToGroup', function(PlayerName, Lpid)
     end
 end)
 
+RegisterNetEvent('ps-markgps:client:CreateMarker', function(coords, label)
+    local marker = AddBlipForCoord(coords.x, coords.y, coords.z)
+    SetBlipSprite(marker, 1)
+    SetBlipDisplay(marker, 4)
+    SetBlipScale(marker, 0.8)
+    SetBlipColour(marker, 5)
+    SetBlipAsShortRange(marker, true)
+    BeginTextCommandSetBlipName("STRING")
+    AddTextComponentString(label)
+    EndTextCommandSetBlipName(marker)
+end)
+
 AddEventHandler('710-lib:PlayerLoaded', function()
 	Wait(3000)
 	TriggerEvent('chat:addSuggestion', '/groups',  "Check your group")
